@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FetchFlix | Streaming for Pets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0f0f10;
+      --bg-alt: #151517;
+      --text-main: #f6f6f6;
+      --text-muted: #c6c6c9;
+      --red-main: #cc0000;
+      --red-soft: #8b0303;
+      --amber-main: #d89b2f;
+      --amber-soft: #f0c36d;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --shadow-strong: 0 22px 48px rgba(0, 0, 0, 0.38);
+      --radius-large: 22px;
+      --radius-mid: 16px;
+      --container-max: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Source Sans 3", sans-serif;
+      background: radial-gradient(circle at 20% -5%, #2a0e0f 0%, var(--bg-main) 36%, #080808 100%);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px) 0 0 / 100% 3px,
+        radial-gradient(circle at 80% 20%, rgba(204, 0, 0, 0.16), transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(216, 155, 47, 0.12), transparent 50%);
+      mix-blend-mode: screen;
+      opacity: 0.45;
+      z-index: -1;
+      animation: drift 18s ease-in-out infinite;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(-1.25%, 1.25%, 0); }
+    }
+
+    .container {
+      width: min(92%, var(--container-max));
+      margin: 0 auto;
+    }
+
+    h1, h2, h3, .display {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.04em;
+      line-height: 1.05;
+    }
+
+    p {
+      color: var(--text-muted);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .section {
+      padding: 5.5rem 0;
+    }
+
+    .section.hidden {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    .section.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(9px);
+      background: rgba(8, 8, 9, 0.74);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.62rem;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(1.7rem, 2vw, 2rem);
+      letter-spacing: 0.06em;
+      color: #fff;
+    }
+
+    .paw {
+      width: 24px;
+      height: 24px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(140deg, #ff3a3a, var(--red-main));
+      box-shadow: 0 0 0 4px rgba(204, 0, 0, 0.2);
+      font-size: 0.84rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.65rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 999px;
+      padding: 0.78rem 1.45rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      line-height: 1;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, #f71111, var(--red-main));
+      box-shadow: 0 8px 24px rgba(204, 0, 0, 0.34);
+    }
+
+    .btn-dark {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .hero {
+      min-height: calc(100vh - 78px);
+      display: grid;
+      align-items: center;
+      padding: 5rem 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.85rem, 8vw, 5.4rem);
+      margin-bottom: 1rem;
+      text-wrap: balance;
+    }
+
+    .hero p {
+      max-width: 62ch;
+      font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
+
+    .hero-note {
+      margin-top: 0.95rem;
+      color: #f7d8a2;
+      font-weight: 600;
+    }
+
+    .hero-taglines {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #efefef;
+      border-radius: 999px;
+      padding: 0.36rem 0.74rem;
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 420px;
+      border-radius: var(--radius-large);
+      border: 1px solid var(--card-border);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(204, 0, 0, 0.55), transparent 38%),
+        radial-gradient(circle at 85% 15%, rgba(216, 155, 47, 0.28), transparent 32%),
+        linear-gradient(140deg, #1c1d21, #0a0a0a 60%);
+      box-shadow: var(--shadow-strong);
+      overflow: hidden;
+      display: grid;
+      place-items: end start;
+      padding: 1.35rem;
+      isolation: isolate;
+    }
+
+    .hero-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(0, 0, 0, 0.68) 8%, transparent 54%),
+        repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.02) 2px,
+          transparent 2px,
+          transparent 4px
+        );
+      z-index: -1;
+    }
+
+    .hero-visual-badge {
+      background: rgba(0, 0, 0, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      font-size: 0.88rem;
+      color: #f9f9f9;
+    }
+
+    .section-head {
+      margin-bottom: 1.85rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .step {
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-mid);
+      padding: 1.2rem;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .step:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .step-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(204, 0, 0, 0.18);
+      border: 1px solid rgba(204, 0, 0, 0.34);
+      margin-bottom: 0.85rem;
+      font-size: 1.1rem;
+    }
+
+    .step h3 {
+      font-size: 1.42rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .library-grid,
+    .testimonial-grid,
+    .pricing-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .library-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .show-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-mid);
+      overflow: hidden;
+      transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    .show-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.33);
+    }
+
+    .show-thumb {
+      height: 120px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.17), transparent 45%),
+        linear-gradient(140deg, #2f3139, #17181c 62%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .show-content {
+      padding: 0.95rem 0.95rem 1.1rem;
+    }
+
+    .accent-bar {
+      width: 62px;
+      height: 4px;
+      border-radius: 999px;
+      margin-bottom: 0.68rem;
+      background: linear-gradient(90deg, #ff2f2f, #ff9b2f);
+    }
+
+    .show-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .show-label {
+      color: #f4d09a;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .partner {
+      background:
+        linear-gradient(145deg, rgba(216, 155, 47, 0.18), rgba(216, 155, 47, 0.05)),
+        linear-gradient(160deg, #1d170d, #101012 64%);
+      border-top: 1px solid rgba(216, 155, 47, 0.37);
+      border-bottom: 1px solid rgba(216, 155, 47, 0.26);
+    }
+
+    .partner-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 1.5rem 2rem;
+    }
+
+    .partner h2 {
+      color: #ffe3b2;
+      font-size: clamp(2.2rem, 4.5vw, 3.7rem);
+    }
+
+    .logo-pair {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1.2rem 0;
+    }
+
+    .logo-box {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 0.62rem 0.9rem;
+      background: rgba(0, 0, 0, 0.22);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #fff;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .partner-visual {
+      min-height: 260px;
+      border-radius: var(--radius-mid);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background:
+        radial-gradient(circle at 75% 28%, rgba(255, 210, 130, 0.35), transparent 40%),
+        linear-gradient(140deg, #362615, #151213 65%);
+      box-shadow: var(--shadow-strong);
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .partner-visual p {
+      color: #ffedca;
+      max-width: 28ch;
+      font-weight: 600;
+    }
+
+    .testimonial-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .testimonial-card {
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-mid);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+      padding: 1rem;
+      transition: transform 0.24s ease, border-color 0.24s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .stars {
+      letter-spacing: 0.12em;
+      color: var(--amber-soft);
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .quote {
+      margin-bottom: 0.72rem;
+      color: #f2f2f4;
+    }
+
+    .author {
+      color: var(--text-muted);
+      font-size: 0.94rem;
+      font-weight: 600;
+    }
+
+    .pricing-grid {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: stretch;
+    }
+
+    .price-card {
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-mid);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.84rem;
+      transition: transform 0.24s ease, border-color 0.24s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .price-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .price-card h3 {
+      font-size: 1.58rem;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.03em;
+      color: #fff;
+    }
+
+    .price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-family: "Source Sans 3", sans-serif;
+    }
+
+    .price-card ul {
+      list-style: none;
+      display: grid;
+      gap: 0.4rem;
+      color: #e8e8ea;
+      margin-bottom: 0.8rem;
+    }
+
+    .price-card li::before {
+      content: "•";
+      color: #ff6666;
+      margin-right: 0.45rem;
+    }
+
+    .popular {
+      border-color: rgba(255, 204, 123, 0.62);
+      background: linear-gradient(165deg, rgba(216, 155, 47, 0.2), rgba(216, 155, 47, 0.08) 60%, rgba(255, 255, 255, 0.02));
+    }
+
+    .popular-tag {
+      position: absolute;
+      top: 0.7rem;
+      right: 0.7rem;
+      background: #f2ba5f;
+      color: #352300;
+      border-radius: 999px;
+      padding: 0.25rem 0.62rem;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: #0a0a0a;
+      padding: 2.2rem 0 2.4rem;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    .small {
+      margin-top: 1.2rem;
+      font-size: 0.86rem;
+      color: #999aa0;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .partner-grid,
+      .steps,
+      .library-grid,
+      .testimonial-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-visual {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .navbar {
+        min-height: 72px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .btn {
+        padding: 0.7rem 1.1rem;
+      }
+
+      .section {
+        padding: 4.4rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav-wrap">
+    <div class="container navbar">
+      <a class="logo" href="#top" aria-label="FetchFlix home">
+        <span class="paw" aria-hidden="true">🐾</span>
+        FetchFlix
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="#library">Shows</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </nav>
+      <a href="#pricing" class="btn btn-primary">Start Streaming Free</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div>
+          <h1>Your Pet Deserves Their Own Channel.</h1>
+          <p>AI-generated streaming content made for dogs and cats — calming, stimulating, and always on.</p>
+          <div class="hero-actions">
+            <a href="#pricing" class="btn btn-primary">Start Your Free Trial</a>
+            <a href="#how" class="btn btn-dark">How It Works</a>
+          </div>
+          <p class="hero-note">Includes a free Farmer's Dog meal plan for new subscribers.</p>
+          <div class="hero-taglines" aria-label="Taglines">
+            <span class="pill">Your pet has screen time too.</span>
+            <span class="pill">FetchFlix &amp; Chill.</span>
+            <span class="pill">Netflix meets Animal Planet, built by AI — made just for pets.</span>
+          </div>
+        </div>
+        <div class="hero-visual" role="img" aria-label="Dog relaxing on a couch and watching TV in a cinematic room">
+          <span class="hero-visual-badge">Cinematic Pet Lounge Mode</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section hidden">
+      <div class="container">
+        <div class="section-head">
+          <h2>How FetchFlix Works</h2>
+          <p>From signup to streaming in under two minutes.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <div class="step-icon" aria-hidden="true">1</div>
+            <h3>Subscribe</h3>
+            <p>Choose a plan built for solo pets, multi-pet homes, or full premium access.</p>
+          </article>
+          <article class="step">
+            <div class="step-icon" aria-hidden="true">2</div>
+            <h3>Set Up Your Pet's Profile</h3>
+            <p>Add species, mood, and size so our AI can tune visuals and movement cues.</p>
+          </article>
+          <article class="step">
+            <div class="step-icon" aria-hidden="true">3</div>
+            <h3>Press Play</h3>
+            <p>FetchFlix picks the perfect stream based on your pet's sensory preferences.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="library" class="section hidden">
+      <div class="container">
+        <div class="section-head">
+          <h2>What's Streaming on FetchFlix</h2>
+          <p>Personalized channels for zoomies, chill-outs, and everything in between.</p>
+        </div>
+        <div class="library-grid">
+          <article class="show-card">
+            <div class="show-thumb"></div>
+            <div class="show-content">
+              <div class="accent-bar"></div>
+              <h3>Squirrel Showdown</h3>
+              <p class="show-label">Action · High Stimulation</p>
+            </div>
+          </article>
+          <article class="show-card">
+            <div class="show-thumb"></div>
+            <div class="show-content">
+              <div class="accent-bar"></div>
+              <h3>Bird Watch Live</h3>
+              <p class="show-label">Nature · Calm Mood</p>
+            </div>
+          </article>
+          <article class="show-card">
+            <div class="show-thumb"></div>
+            <div class="show-content">
+              <div class="accent-bar"></div>
+              <h3>Laser Frenzy</h3>
+              <p class="show-label">Interactive · Cat Focus</p>
+            </div>
+          </article>
+          <article class="show-card">
+            <div class="show-thumb"></div>
+            <div class="show-content">
+              <div class="accent-bar"></div>
+              <h3>Tail Tales</h3>
+              <p class="show-label">Bedtime · Calming Audio</p>
+            </div>
+          </article>
+          <article class="show-card">
+            <div class="show-thumb"></div>
+            <div class="show-content">
+              <div class="accent-bar"></div>
+              <h3>The Barking Lot</h3>
+              <p class="show-label">Reality · Social Energy</p>
+            </div>
+          </article>
+          <article class="show-card">
+            <div class="show-thumb"></div>
+            <div class="show-content">
+              <div class="accent-bar"></div>
+              <h3>Bone Appétit</h3>
+              <p class="show-label">Comedy · Playful</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section partner hidden">
+      <div class="container partner-grid">
+        <div>
+          <h2>Dinner &amp; a Show.</h2>
+          <p>Every new FetchFlix subscription includes a personalized meal plan from The Farmer's Dog — fresh, vet-developed food delivered to your door. Because great TV is better with a great meal.</p>
+          <div class="logo-pair" aria-label="Partnership logos">
+            <div class="logo-box">FetchFlix</div>
+            <div class="logo-box">The Farmer's Dog</div>
+          </div>
+          <a href="#pricing" class="btn btn-primary">Claim Your Bundle</a>
+        </div>
+        <div class="partner-visual" role="img" aria-label="Warm premium brand spotlight panel for FetchFlix and The Farmer's Dog">
+          <p>Fresh meals + sensory-optimized streaming, delivered in one bundle.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hidden">
+      <div class="container">
+        <div class="section-head">
+          <h2>What Pet Parents Are Saying</h2>
+        </div>
+        <div class="testimonial-grid">
+          <article class="testimonial-card">
+            <div class="stars" aria-label="5 star rating">★★★★★</div>
+            <p class="quote">"Clarke hasn't barked at the TV once since we switched to FetchFlix. He's obsessed with Squirrel Showdown."</p>
+            <p class="author">— Dana M., Golden Retriever parent</p>
+          </article>
+          <article class="testimonial-card">
+            <div class="stars" aria-label="5 star rating">★★★★★</div>
+            <p class="quote">"My cat literally sits and watches Laser Frenzy for 45 minutes. This is magic."</p>
+            <p class="author">— Marcus T., Cat dad</p>
+          </article>
+          <article class="testimonial-card">
+            <div class="stars" aria-label="5 star rating">★★★★★</div>
+            <p class="quote">"The Farmer's Dog bundle sealed the deal. Our dog eats better than we do now, honestly."</p>
+            <p class="author">— Priya K., Rescue dog mom</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section hidden">
+      <div class="container">
+        <div class="section-head">
+          <h2>Choose Your Pack</h2>
+          <p>Flexible plans for one pet or a whole house of furry binge-watchers.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Pup Plan</h3>
+            <p class="price">$4.99<span>/mo</span></p>
+            <ul>
+              <li>1 pet profile</li>
+              <li>Standard content catalog</li>
+            </ul>
+            <a href="#top" class="btn btn-dark">Start Free Trial</a>
+          </article>
+          <article class="price-card popular">
+            <span class="popular-tag">Most Popular</span>
+            <h3>Pack Plan</h3>
+            <p class="price">$9.99<span>/mo</span></p>
+            <ul>
+              <li>Up to 3 pet profiles</li>
+              <li>HD content + mood detection</li>
+            </ul>
+            <a href="#top" class="btn btn-primary">Start Free Trial</a>
+          </article>
+          <article class="price-card">
+            <h3>Alpha Plan</h3>
+            <p class="price">$14.99<span>/mo</span></p>
+            <ul>
+              <li>Unlimited profiles</li>
+              <li>Premium shows + early access</li>
+              <li>Farmer's Dog bundle included</li>
+            </ul>
+            <a href="#top" class="btn btn-dark">Start Free Trial</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="logo" href="#top" aria-label="FetchFlix footer logo">
+            <span class="paw" aria-hidden="true">🐾</span>
+            FetchFlix
+          </a>
+          <p style="margin-top: 0.5rem;">Your pet has screen time too.</p>
+        </div>
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="#top">Privacy Policy</a>
+          <a href="#top">Terms</a>
+          <a href="#top">Contact</a>
+        </nav>
+      </div>
+      <p class="small">FetchFlix is a fictional brand created for an academic project. Not affiliated with Netflix or The Farmer's Dog.</p>
+    </div>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll(".section.hidden");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.16,
+      rootMargin: "0px 0px -30px 0px"
+    });
+
+    sections.forEach((section) => observer.observe(section));
+  </script>
+</body>
+</html>
