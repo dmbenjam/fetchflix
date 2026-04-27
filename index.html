@@ -220,6 +220,11 @@
       margin-top: 1.2rem;
     }
 
+    .hero-cta {
+      padding: 1rem 1.9rem;
+      font-size: 1.08rem;
+    }
+
     .hero-note {
       margin-top: 0.95rem;
       color: #f7d8a2;
@@ -249,9 +254,8 @@
       border-radius: var(--radius-large);
       border: 1px solid var(--card-border);
       background:
-        radial-gradient(circle at 20% 20%, rgba(204, 0, 0, 0.55), transparent 38%),
-        radial-gradient(circle at 85% 15%, rgba(216, 155, 47, 0.28), transparent 32%),
-        linear-gradient(140deg, #1c1d21, #0a0a0a 60%);
+        linear-gradient(rgba(8, 8, 9, 0.12), rgba(8, 8, 9, 0.12)),
+        url("assets/header-image.png") center/cover no-repeat;
       box-shadow: var(--shadow-strong);
       overflow: hidden;
       display: grid;
@@ -274,15 +278,6 @@
           transparent 4px
         );
       z-index: -1;
-    }
-
-    .hero-visual-badge {
-      background: rgba(0, 0, 0, 0.58);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      border-radius: 999px;
-      padding: 0.45rem 0.8rem;
-      font-size: 0.88rem;
-      color: #f9f9f9;
     }
 
     .section-head {
@@ -363,6 +358,13 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
+    .show-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .show-content {
       padding: 0.95rem 0.95rem 1.1rem;
     }
@@ -406,6 +408,10 @@
       font-size: clamp(2.2rem, 4.5vw, 3.7rem);
     }
 
+    .partner-copy {
+      margin: 0.9rem 0 1.25rem;
+    }
+
     .logo-pair {
       display: flex;
       align-items: center;
@@ -430,20 +436,12 @@
       min-height: 260px;
       border-radius: var(--radius-mid);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      background:
-        radial-gradient(circle at 75% 28%, rgba(255, 210, 130, 0.35), transparent 40%),
-        linear-gradient(140deg, #362615, #151213 65%);
+      background: url("assets/farmers-dog.jpg") center/cover no-repeat;
       box-shadow: var(--shadow-strong);
       display: grid;
       place-items: center;
       padding: 1rem;
       text-align: center;
-    }
-
-    .partner-visual p {
-      color: #ffedca;
-      max-width: 28ch;
-      font-weight: 600;
     }
 
     .testimonial-grid {
@@ -645,22 +643,14 @@
     <section class="hero section">
       <div class="container hero-grid">
         <div>
-          <h1>Your Pet Deserves Their Own Channel.</h1>
-          <p>AI-generated streaming content made for dogs and cats — calming, stimulating, and always on.</p>
+          <h1>Your dog's perfect night in</h1>
+          <p>AI-generated streaming content made for dogs—calming, exciting, and always on.</p>
           <div class="hero-actions">
-            <a href="#pricing" class="btn btn-primary">Start Your Free Trial</a>
-            <a href="#how" class="btn btn-dark">How It Works</a>
+            <a href="#pricing" class="btn btn-primary hero-cta">Start Your Free Trial</a>
           </div>
           <p class="hero-note">Includes a free Farmer's Dog meal plan for new subscribers.</p>
-          <div class="hero-taglines" aria-label="Taglines">
-            <span class="pill">Your pet has screen time too.</span>
-            <span class="pill">FetchFlix &amp; Chill.</span>
-            <span class="pill">Netflix meets Animal Planet, built by AI — made just for pets.</span>
-          </div>
         </div>
-        <div class="hero-visual" role="img" aria-label="Dog relaxing on a couch and watching TV in a cinematic room">
-          <span class="hero-visual-badge">Cinematic Pet Lounge Mode</span>
-        </div>
+        <div class="hero-visual" role="img" aria-label="Dog relaxing on a couch and watching TV in a cinematic room"></div>
       </div>
     </section>
 
@@ -698,7 +688,9 @@
         </div>
         <div class="library-grid">
           <article class="show-card">
-            <div class="show-thumb"></div>
+            <div class="show-thumb">
+              <img src="assets/squirrel-showdown.png" alt="Squirrel Showdown poster">
+            </div>
             <div class="show-content">
               <div class="accent-bar"></div>
               <h3>Squirrel Showdown</h3>
@@ -706,7 +698,9 @@
             </div>
           </article>
           <article class="show-card">
-            <div class="show-thumb"></div>
+            <div class="show-thumb">
+              <img src="assets/bird-watch-live.png" alt="Bird Watch Live poster">
+            </div>
             <div class="show-content">
               <div class="accent-bar"></div>
               <h3>Bird Watch Live</h3>
@@ -714,7 +708,9 @@
             </div>
           </article>
           <article class="show-card">
-            <div class="show-thumb"></div>
+            <div class="show-thumb">
+              <img src="assets/laser-frenzy.png" alt="Laser Frenzy poster">
+            </div>
             <div class="show-content">
               <div class="accent-bar"></div>
               <h3>Laser Frenzy</h3>
@@ -722,7 +718,9 @@
             </div>
           </article>
           <article class="show-card">
-            <div class="show-thumb"></div>
+            <div class="show-thumb">
+              <img src="assets/tail-tales.png" alt="Tail Tales poster">
+            </div>
             <div class="show-content">
               <div class="accent-bar"></div>
               <h3>Tail Tales</h3>
@@ -730,7 +728,9 @@
             </div>
           </article>
           <article class="show-card">
-            <div class="show-thumb"></div>
+            <div class="show-thumb">
+              <img src="assets/the-barking-lot.png" alt="The Barking Lot poster">
+            </div>
             <div class="show-content">
               <div class="accent-bar"></div>
               <h3>The Barking Lot</h3>
@@ -738,7 +738,9 @@
             </div>
           </article>
           <article class="show-card">
-            <div class="show-thumb"></div>
+            <div class="show-thumb">
+              <img src="assets/bone-appetit.png" alt="Bone Appétit poster">
+            </div>
             <div class="show-content">
               <div class="accent-bar"></div>
               <h3>Bone Appétit</h3>
@@ -753,16 +755,10 @@
       <div class="container partner-grid">
         <div>
           <h2>Dinner &amp; a Show.</h2>
-          <p>Every new FetchFlix subscription includes a personalized meal plan from The Farmer's Dog — fresh, vet-developed food delivered to your door. Because great TV is better with a great meal.</p>
-          <div class="logo-pair" aria-label="Partnership logos">
-            <div class="logo-box">FetchFlix</div>
-            <div class="logo-box">The Farmer's Dog</div>
-          </div>
+          <p class="partner-copy">Every new FetchFlix subscription includes a personalized meal plan from The Farmer's Dog — fresh, vet-developed food delivered to your door. Because great TV is better with a great meal.</p>
           <a href="#pricing" class="btn btn-primary">Claim Your Bundle</a>
         </div>
-        <div class="partner-visual" role="img" aria-label="Warm premium brand spotlight panel for FetchFlix and The Farmer's Dog">
-          <p>Fresh meals + sensory-optimized streaming, delivered in one bundle.</p>
-        </div>
+        <div class="partner-visual" role="img" aria-label="The Farmer's Dog meal plan photo"></div>
       </div>
     </section>
 
